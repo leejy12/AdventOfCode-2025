@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <print>
 #include <string>
 
 int mod(int a, int m) noexcept
@@ -51,5 +52,5 @@ int main()
         }
     }
 
-    std::cout << cnt << '\n';
+    std::println("{}", cnt);
 }

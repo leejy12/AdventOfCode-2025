@@ -44,7 +44,7 @@ int main()
         else
         {
             dial = mod(dial - d, 100);
-            if ((prev != 0) && ( dial == 0 || dial > prev))
+            if ((prev != 0) && (dial == 0 || dial > prev))
             {
                 cnt++;
             }

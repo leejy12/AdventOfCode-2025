@@ -11,7 +11,7 @@ int main()
 {
     int dial = 50;
     int cnt = 0;
-    
+
     std::string s;
     while (std::cin >> s)
     {

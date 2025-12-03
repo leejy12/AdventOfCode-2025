@@ -53,7 +53,7 @@ ull sum_invalid_ids(ull a, ull b)
     auto it = g_invalid_ids.lower_bound(a);
     while (true)
     {
-        if (*it > b || it == g_invalid_ids.end())
+        if (it == g_invalid_ids.end() || *it > b)
         {
             break;
         }

@@ -20,7 +20,7 @@ bool is_repeated_sequence(std::string_view sv, int len)
         return false;
     }
 
-    const int rep = sv.length() / len - 1;
+    const auto rep = sv.length() / len - 1;
 
     for (int i = 0; i < rep; i++)
     {

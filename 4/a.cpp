@@ -5,8 +5,8 @@
 
 int count_rolls(const std::vector<std::string>& v)
 {
-    const int R = v.size();
-    const int C = v[0].size();
+    const auto R = v.size();
+    const auto C = v[0].size();
 
     const auto is_roll = [&](int r, int c) { return r >= 0 && r < R && c >= 0 && c < C && v[r][c] == '@'; };
     int cnt = 0;

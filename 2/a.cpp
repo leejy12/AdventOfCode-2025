@@ -22,7 +22,7 @@ int count_digits(ull n) noexcept
     return digits;
 }
 
-ull pow(ull b, ull e) noexcept
+ull my_pow(ull b, ull e) noexcept
 {
     ull result = 1;
     for (int i = 0; i < e; i++)
@@ -39,12 +39,12 @@ ull next(ull n) noexcept
     {
         // e.g. n == XXX => return 1010.
         const int h = (d + 1) / 2;
-        return pow(10, d) + pow(10, h - 1);
+        return my_pow(10, d) + my_pow(10, h - 1);
     }
     else
     {
         const int h = d / 2;
-        const int div = pow(10, h);
+        const ull div = my_pow(10, h);
         const ull a = n / div; // first half
         const ull b = n % div; // second half
 

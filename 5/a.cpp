@@ -1,3 +1,6 @@
+// If the number of ranges is M and the number of ingredients is N,
+// runtime is O(M * N).
+
 #include <charconv>
 #include <iostream>
 #include <print>

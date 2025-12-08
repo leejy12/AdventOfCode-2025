@@ -73,13 +73,6 @@ public:
         }
         return root_to_size;
     }
-
-    void print()
-    {
-        std::println("{}", parent);
-        std::println("{}", get_component_sizes());
-        std::println();
-    }
 };
 
 ull dist_sq(const std::array<ull, 3>& a, const std::array<ull, 3>& b) noexcept

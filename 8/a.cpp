@@ -119,9 +119,7 @@ int main()
         uf.merge(i, j);
     }
 
-    std::vector<int> sizes = uf.get_component_sizes() |
-                             std::views::transform([](const auto& pair) { return pair.second; }) |
-                             std::ranges::to<std::vector>();
+    std::vector<int> sizes = uf.get_component_sizes() | std::views::values | std::ranges::to<std::vector>();
     std::ranges::sort(sizes, std::greater<>{});
     const int ans = sizes[0] * sizes[1] * sizes[2];
     std::println("{}", ans);

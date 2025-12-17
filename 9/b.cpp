@@ -123,7 +123,7 @@ int main()
 
     std::mutex m;
 
-    std::for_each(std::execution::par_unseq, pairs.begin(), pairs.end(), [&](const std::pair<pii, pii> p) {
+    std::for_each(std::execution::par_unseq, pairs.begin(), pairs.end(), [&](const std::pair<pii, pii>& p) {
         if (check_all_inside_boundary(p.first, p.second))
         {
             const int64_t area =

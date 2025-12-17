@@ -29,6 +29,9 @@ struct Hline
     {
         return p.second >= pos && p.first >= start && p.first <= end;
     }
+
+    auto operator<=>(const Hline& other) const = default;
+    bool operator==(const Hline& other) const = default;
 };
 
 struct Vline
@@ -50,6 +53,9 @@ struct Vline
     {
         return p.first <= pos && p.second >= start && p.second <= end;
     }
+
+    auto operator<=>(const Vline& other) const = default;
+    bool operator==(const Vline& other) const = default;
 };
 
 int main()
@@ -86,11 +92,31 @@ int main()
     }
     add_lines(v.back(), v.front());
 
+    std::ranges::sort(vlines);
+    std::ranges::sort(hlines);
+
     const auto check_inside_boundary = [&](const pii& p) {
-        return std::ranges::any_of(vlines, [&](const Vline& v) { return v.left(p); }) &&
-               std::ranges::any_of(vlines, [&](const Vline& v) { return v.right(p); }) &&
-               std::ranges::any_of(hlines, [&](const Hline& h) { return h.above(p); }) &&
-               std::ranges::any_of(hlines, [&](const Hline& h) { return h.below(p); });
+        auto it_x = std::upper_bound(vlines.begin(), vlines.end(), p.first, [](int64_t x, const Vline& v) {
+            return x <= v.pos;
+        });
+        if (std::none_of(it_x, vlines.end(), [&](const Vline& v) { return v.left(p); }))
+            return false;
+        while ((*it_x).pos == p.first)
+            ++it_x;
+        if (std::none_of(vlines.begin(), it_x, [&](const Vline& v) { return v.right(p); }))
+            return false;
+
+        auto it_y = std::upper_bound(hlines.begin(), hlines.end(), p.second, [](int64_t y, const Hline& h) {
+            return y <= h.pos;
+        });
+        if (std::none_of(it_y, hlines.end(), [&](const Hline& h) { return h.above(p); }))
+            return false;
+        while ((*it_y).pos == p.second)
+            ++it_y;
+        if (std::none_of(hlines.begin(), it_y, [&](const Hline& h) { return h.below(p); }))
+            return false;
+
+        return true;
     };
 
     const auto check_all_inside_boundary = [&](const pii& p1, const pii& p2) {

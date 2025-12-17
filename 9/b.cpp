@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <execution>
 #include <iostream>
+#include <mutex>
 #include <print>
 #include <ranges>
 #include <string>
@@ -114,19 +116,23 @@ int main()
     };
 
     int64_t max_area = 0;
+    std::vector<std::pair<pii, pii>> pairs;
     for (size_t i = 0; i < v.size(); i++)
-    {
         for (size_t j = i + 1; j < v.size(); j++)
+            pairs.emplace_back(v[i], v[j]);
+
+    std::mutex m;
+
+    std::for_each(std::execution::par_unseq, pairs.begin(), pairs.end(), [&](const std::pair<pii, pii> p) {
+        if (check_all_inside_boundary(p.first, p.second))
         {
-            if (check_all_inside_boundary(v[i], v[j]))
-            {
-                const int64_t area =
-                    (std::abs(v[i].first - v[j].first) + 1) * (std::abs(v[i].second - v[j].second) + 1);
-                if (area > max_area)
-                    max_area = area;
-            }
+            const int64_t area =
+                (std::abs(p.first.first - p.second.first) + 1) * (std::abs(p.first.second - p.second.second) + 1);
+            std::lock_guard<std::mutex> lock(m);
+            if (area > max_area)
+                max_area = area;
         }
-    }
+    });
 
     std::println("{}", max_area);
 }

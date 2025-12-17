@@ -85,15 +85,10 @@ int main()
     add_lines(v.back(), v.front());
 
     const auto check_inside_boundary = [&](const pii& p) {
-        if (std::ranges::none_of(vlines, [&](const Vline& v) { return v.left(p); }))
-            return false;
-        if (std::ranges::none_of(vlines, [&](const Vline& v) { return v.right(p); }))
-            return false;
-        if (std::ranges::none_of(hlines, [&](const Hline& h) { return h.above(p); }))
-            return false;
-        if (std::ranges::none_of(hlines, [&](const Hline& h) { return h.below(p); }))
-            return false;
-        return true;
+        return std::ranges::any_of(vlines, [&](const Vline& v) { return v.left(p); }) &&
+               std::ranges::any_of(vlines, [&](const Vline& v) { return v.right(p); }) &&
+               std::ranges::any_of(hlines, [&](const Hline& h) { return h.above(p); }) &&
+               std::ranges::any_of(hlines, [&](const Hline& h) { return h.below(p); });
     };
 
     const auto check_all_inside_boundary = [&](const pii& p1, const pii& p2) {

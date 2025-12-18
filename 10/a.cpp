@@ -1,7 +1,5 @@
-#include <algorithm>
 #include <bit>
 #include <iostream>
-#include <numeric>
 #include <print>
 #include <ranges>
 #include <string>
@@ -61,15 +59,12 @@ int main()
 {
     std::string s;
     std::vector<std::string> v;
+    int answer = 0;
 
     while (std::getline(std::cin, s))
     {
-        v.push_back(s);
+        answer += solve(s);
     }
 
-    std::vector<int> answers(v.size());
-    std::transform(v.begin(), v.end(), answers.begin(), solve);
-
-    const int answer = std::accumulate(answers.begin(), answers.end(), 0);
     std::println("{}", answer);
 }

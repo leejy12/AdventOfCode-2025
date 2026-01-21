@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <print>
 #include <ranges>
@@ -5,6 +6,10 @@
 #include <string_view>
 #include <vector>
 
+/**
+ * Converts a matrix `m` to reduced row echelon form.
+ * This implements the pseudocode in https://rosettacode.org/wiki/Reduced_row_echelon_form.
+ */
 void gauss_elim(std::vector<std::vector<int>>& m)
 {
     int lead = 0;
@@ -37,7 +42,7 @@ void gauss_elim(std::vector<std::vector<int>>& m)
 
         if (m[r][lead] != 0)
         {
-            int divisor = m[r][lead];
+            const int divisor = m[r][lead];
             for (int& v : m[r])
             {
                 v /= divisor;
@@ -48,7 +53,7 @@ void gauss_elim(std::vector<std::vector<int>>& m)
         {
             if (j != r)
             {
-                int factor = m[j][lead];
+                const int factor = m[j][lead];
                 for (int k = 0; k < numCols; k++)
                 {
                     m[j][k] -= factor * m[r][k];
@@ -60,6 +65,56 @@ void gauss_elim(std::vector<std::vector<int>>& m)
     }
 }
 
+void remove_zero_rows(std::vector<std::vector<int>>& m)
+{
+    for (auto it = m.begin(); it != m.end(); ++it)
+    {
+        if (std::ranges::all_of(*it, [](int x) { return x == 0; }))
+        {
+            m.erase(it, m.end());
+            return;
+        }
+    }
+}
+
+std::vector<std::vector<int>> parse(const std::string& s)
+{
+    std::vector<std::vector<int>> m;
+
+    const size_t light_end = s.find(']');
+    const int num_lights = static_cast<int>(light_end - 1);
+    const size_t switch_start = s.find('(');
+    const size_t jolt_start = s.find('{');
+
+    std::vector<std::vector<int>> m;
+    m.resize(num_lights);
+
+    for (size_t i = switch_start; i < jolt_start; i++)
+    {
+        if (s[i] == '(')
+        {
+            // new column
+            for (auto& row : m)
+                row.push_back(0);
+        }
+        else if (s[i] >= '0' && s[i] <= '9')
+        {
+            m[s[i] - '0'].back() = 1;
+        }
+    }
+
+    std::string_view jolt_sv(s.c_str() + jolt_start + 1, s.size() - jolt_start - 2);
+    for (auto [row, rng] : std::views::enumerate(jolt_sv | std::views::split(',')))
+    {
+        std::string_view sv(rng);
+        int x{};
+        std::from_chars(sv.data(), sv.data() + sv.size(), x);
+        m[row].push_back(x);
+    }
+
+    return m;
+}
+
 int main()
 {
     std::string s;
@@ -67,38 +122,9 @@ int main()
 
     while (std::getline(std::cin, s))
     {
-        const size_t light_end = s.find(']');
-        const int num_lights = static_cast<int>(light_end - 1);
-        const size_t switch_start = s.find('(');
-        const size_t jolt_start = s.find('{');
-
-        std::vector<std::vector<int>> m;
-        m.resize(num_lights);
-
-        for (size_t i = switch_start; i < jolt_start; i++)
-        {
-            if (s[i] == '(')
-            {
-                // new column
-                for (auto& row : m)
-                    row.push_back(0);
-            }
-            else if (s[i] >= '0' && s[i] <= '9')
-            {
-                m[s[i] - '0'].back() = 1;
-            }
-        }
-
-        std::string_view jolt_sv(s.c_str() + jolt_start + 1, s.size() - jolt_start - 2);
-        for (auto [row, rng] : std::views::enumerate(jolt_sv | std::views::split(',')))
-        {
-            std::string_view sv(rng);
-            int x{};
-            std::from_chars(sv.data(), sv.data() + sv.size(), x);
-            m[row].push_back(x);
-        }
-
+        std::vector<std::vector<int>> m = parse(s);
         gauss_elim(m);
+        remove_zero_rows(m);
         std::println("{}", m);
     }
 

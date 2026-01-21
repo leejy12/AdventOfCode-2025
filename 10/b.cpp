@@ -79,8 +79,6 @@ void remove_zero_rows(std::vector<std::vector<int>>& m)
 
 std::vector<std::vector<int>> parse(const std::string& s)
 {
-    std::vector<std::vector<int>> m;
-
     const size_t light_end = s.find(']');
     const int num_lights = static_cast<int>(light_end - 1);
     const size_t switch_start = s.find('(');
@@ -115,6 +113,31 @@ std::vector<std::vector<int>> parse(const std::string& s)
     return m;
 }
 
+std::vector<int> get_free_vars(const std::vector<std::vector<int>>& m)
+{
+    const int num_vars = static_cast<int>(m[0].size() - 1);
+    std::vector<bool> is_pivot(num_vars, false);
+
+    for (const auto& row : m)
+    {
+        for (int col = 0; col < num_vars; col++)
+        {
+            if (row[col] == 1)
+            {
+                is_pivot[col] = true;
+                break;
+            }
+        }
+    }
+
+    std::vector<int> free_vars;
+    for (int col = 0; col < num_vars; col++)
+        if (!is_pivot[col])
+            free_vars.push_back(col);
+
+    return free_vars;
+}
+
 int main()
 {
     std::string s;
@@ -126,6 +149,7 @@ int main()
         gauss_elim(m);
         remove_zero_rows(m);
         std::println("{}", m);
+        std::println("{}", get_free_vars(m));
     }
 
     // std::println("{}", answer);
